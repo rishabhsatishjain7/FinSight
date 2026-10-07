@@ -1,8 +1,17 @@
 # FinSight — Financial Data Platform
 
+[![CI](https://github.com/rishabhsatishjain7/FinSight/actions/workflows/ci.yml/badge.svg)](https://github.com/rishabhsatishjain7/FinSight/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A modular financial distress-screening platform: XBRL ingestion → ratio/Z-score
 transformation → XGBoost + SHAP scoring → Gemini-powered narrative generation →
 automated PDF reporting, orchestrated with Airflow.
+
+## Screenshots
+
+![FinSight dashboard — company screen overview](docs/screenshots/dashboard-overview.png)
+
+![FinSight company detail — SHAP drivers, sector outliers, ratio trends](docs/screenshots/company-detail.png)
 
 ## Architecture
 
@@ -114,7 +123,8 @@ company with `?company=TICKER`.
 pytest tests/ -v
 ```
 
-89 tests cover multi-tag fallback resolution, schema-evolution merging,
+93 tests (89 core + 4 Postgres integration) cover multi-tag fallback
+resolution, schema-evolution merging,
 restatement handling, fiscal-year calendar alignment, currency-unit safety,
 ratio null-safety, robust sector Z-score benchmarking (including outlier
 resistance), label-leakage guards on the distress model's feature
@@ -127,19 +137,28 @@ documents 12 real defects found during development (root cause → fix →
 guarding test) — this is the "structured regression case" log referenced
 in project docs.
 
-## Notes on this build
+## Limitations
 
-- **SEC EDGAR / Gemini network access**: this environment's sandbox network
-  allowlist doesn't include `data.sec.gov` or `generativelanguage.googleapis.com`,
-  so live end-to-end ingestion and narrative generation couldn't be executed
-  *from this sandbox*. The offline demo (`scripts/run_demo.py`) exercises the
-  same code paths (parser → ratio engine → Z-score → XGBoost → SHAP) against
-  synthetic data shaped identically to real SEC responses, and all 89
-  tests pass (4 Postgres-specific tests auto-skip without a live DB). PDF generation was verified end-to-end with a synthetic context.
-  Everything will run live once you supply `SEC_USER_AGENT` and `GEMINI_API_KEY`
-  in an environment with outbound access to those hosts.
-- **Airflow**: `apache-airflow` wasn't installed in this sandbox (heavy
-  dependency footprint, and its own network/DB setup is out of scope for a
-  container test run), but the DAG file's syntax/structure was validated. It
-  imports the same `pipeline.py` stage functions used by the CLI, so DAG
-  correctness is really a thin wrapper over already-tested code.
+- **Live SEC EDGAR / Gemini runs need credentials**: set `SEC_USER_AGENT`
+  (required by SEC EDGAR's terms) and `GEMINI_API_KEY` before running
+  `pipeline.py` against live data; without them only the offline demo works.
+  The sandbox this was built in also blocks `data.sec.gov` and
+  `generativelanguage.googleapis.com`, so live end-to-end ingestion and
+  narrative generation were verified only up to the demo/tests level here —
+  everything runs live once you supply those two env vars in an environment
+  with outbound access to those hosts.
+- **The demo uses synthetic data**: `scripts/run_demo.py` generates
+  structurally-real XBRL payloads (same shape as real SEC responses) rather
+  than pulling from EDGAR, and the demo narrative stage is skipped without
+  `GEMINI_API_KEY`. PDF generation was verified end-to-end with a synthetic
+  context.
+- **Airflow lives in its own venv**: `apache-airflow` is deliberately not in
+  `requirements.txt` — Airflow 2.9.3 requires `sqlalchemy<2.0`, which
+  conflicts with this project's `SQLAlchemy==2.0.36` (see
+  `requirements-airflow.txt`). The DAG file's syntax/structure was
+  validated; it imports the same `pipeline.py` stage functions as the CLI,
+  so DAG correctness is a thin wrapper over already-tested code.
+- **4 Postgres integration tests auto-skip** without a reachable Postgres at
+  `PG_TEST_URL` (`tests/test_storage.py`). CI provides one via a service
+  container, so all 93 tests run there: locally `pytest tests/ -v` reports
+  `93 passed` with Postgres up, or `89 passed, 4 skipped` without it.

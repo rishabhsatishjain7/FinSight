@@ -1,0 +1,36 @@
+# Airflow is deliberately NOT in requirements.txt.
+#
+# Why: Apache Airflow pins its own transitive dependencies very tightly --
+# e.g. Airflow 2.9.3 requires `sqlalchemy>=1.4.36,<2.0`, which directly
+# conflicts with this project's `SQLAlchemy==2.0.36` (needed for the
+# Postgres-capable storage layer in database/storage.py and used by the
+# dashboard backend, webapp/main.py). There is no version of Airflow 2.x
+# that accepts SQLAlchemy 2.x, so the two cannot be pip-installed into the
+# same environment at all -- this isn't a narrow version mismatch to nudge
+# around, it's a hard incompatibility across the whole Airflow 2.x line.
+#
+# This is also just how Airflow is meant to be deployed in practice: in
+# its own dedicated environment, installed against Airflow's own official
+# "constraints file" (a fully pinned set of every transitive dependency
+# for that Airflow version + Python version), not mixed into an arbitrary
+# project's requirements.txt. dags/finsight_pipeline_dag.py is meant to be
+# copied into that separate Airflow deployment (see README.md's "Under
+# Airflow" section) -- it is never imported by anything in tests/,
+# scripts/run_demo.py, pipeline.py's CLI path, or webapp/, so none of
+# those need Airflow installed at all.
+#
+# To actually try the DAGs, create a SEPARATE virtual environment (do not
+# reuse the one from requirements.txt) and run:
+#
+#   python3 -m venv airflow-venv
+#   source airflow-venv/bin/activate
+#   AIRFLOW_VERSION=2.9.3
+#   PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+#   CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+#   pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+#
+# Then, separately, install whatever this project's own code needs that
+# Airflow's constraints file doesn't already cover (PyYAML, pandas,
+# xgboost, reportlab, matplotlib, etc. -- everything in requirements.txt
+# except SQLAlchemy/psycopg2-binary, which Airflow brings its own
+# compatible versions of).

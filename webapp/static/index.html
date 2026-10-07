@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinSight — Distress Screen</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:,">
+</head>
+<body>
+
+  <header class="appbar">
+    <div class="appbar__brand">
+      <span class="appbar__mark">FS</span>
+      <div class="appbar__title">
+        <h1>FinSight</h1>
+        <p>Financial distress screen</p>
+      </div>
+    </div>
+
+    <div class="appbar__summary" id="summary-strip" aria-live="polite">
+      <!-- populated by app.js -->
+    </div>
+
+    <div class="appbar__controls">
+      <input
+        id="search"
+        type="search"
+        placeholder="Filter by ticker, name, or sector"
+        aria-label="Filter companies"
+      />
+      <select id="sector-filter" aria-label="Filter by sector">
+        <option value="">All sectors</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <table class="screen" id="company-table">
+      <thead>
+        <tr>
+          <th scope="col" class="col-ticker">Ticker</th>
+          <th scope="col" class="col-name">Company</th>
+          <th scope="col" class="col-sector">Sector</th>
+          <th scope="col" class="col-year">FY</th>
+          <th scope="col" class="col-prob">Distress probability</th>
+          <th scope="col" class="col-risk">Risk</th>
+        </tr>
+      </thead>
+      <tbody id="company-rows">
+        <!-- populated by app.js -->
+      </tbody>
+    </table>
+
+    <div id="empty-state" class="empty-state" hidden>
+      <p class="empty-state__title">No scored companies yet</p>
+      <p class="empty-state__body">
+        This dashboard reads whatever the pipeline has already written.
+        Run <code>python3 scripts/run_demo.py</code> for offline synthetic
+        data, or <code>python3 pipeline.py --stage all</code> against live
+        SEC EDGAR and Gemini, then reload this page.
+      </p>
+    </div>
+  </main>
+
+  <template id="detail-template">
+    <tr class="detail-row" hidden>
+      <td colspan="6">
+        <div class="detail">
+          <div class="detail__col detail__col--wide">
+            <h3>Narrative</h3>
+            <p class="detail__narrative" data-field="narrative"></p>
+
+            <h3>Model drivers</h3>
+            <div class="driver-list" data-field="drivers"></div>
+          </div>
+
+          <div class="detail__col">
+            <h3>Sector outliers</h3>
+            <table class="detail__table" data-field="outliers">
+              <thead>
+                <tr><th>Ratio</th><th>Z-score</th><th>Value</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+            <h3>Ratio trends</h3>
+            <div class="trend-grid" data-field="trends"></div>
+
+            <div class="detail__report" data-field="report"></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+/* ---------------------------------------------------------------------
+   FinSight dashboard — design tokens
+
+   Dark, dense, table-first: built for scanning many companies quickly,
+   the way a credit analyst actually works, rather than a marketing-style
+   card grid. Numeric/ticker data is set in monospace throughout so
+   figures align and compare at a glance; everything else is a plain
+   system sans. One accent (brass/gold, a deliberate nod to ledgers and
+   trading-floor amber readouts) is reserved for interactive elements;
+   risk state uses its own separate three-color system so the two are
+   never visually confused.
+--------------------------------------------------------------------- */
+
+:root {
+  --bg-base: #0a0d10;
+  --bg-surface: #12161a;
+  --bg-elevated: #191f24;
+  --border: #232a30;
+  --border-strong: #333c44;
+
+  --text-primary: #eceef0;
+  --text-secondary: #8a939c;
+  --text-tertiary: #5b646c;
+
+  --accent: #c9a227;
+  --accent-hover: #e0bd4a;
+
+  --risk-low: #5c9c76;
+  --risk-low-bg: rgba(92, 156, 118, 0.12);
+  --risk-elevated: #c97c3d;
+  --risk-elevated-bg: rgba(201, 124, 61, 0.12);
+  --risk-high: #b5453b;
+  --risk-high-bg: rgba(181, 69, 59, 0.14);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, "Liberation Mono", monospace;
+
+  --radius: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  background: var(--bg-elevated);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------- */
+/* App bar                                                                */
+/* --------------------------------------------------------------------- */
+
+.appbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 14px 28px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.appbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.appbar__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.appbar__title h1 {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.appbar__title p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.appbar__summary {
+  display: flex;
+  gap: 18px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.pill {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.pill__count {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 1px;
+}
+
+.pill--high .pill__dot { background: var(--risk-high); }
+.pill--elevated .pill__dot { background: var(--risk-elevated); }
+.pill--low .pill__dot { background: var(--risk-low); }
+
+.appbar__controls {
+  display: flex;
+  gap: 8px;
+}
+
+#search,
+#sector-filter {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+}
+
+#search {
+  width: 240px;
+}
+
+#search::placeholder {
+  color: var(--text-tertiary);
+}
+
+#search:focus,
+#sector-filter:focus {
+  border-color: var(--accent);
+}
+
+/* --------------------------------------------------------------------- */
+/* Main / table                                                          */
+/* --------------------------------------------------------------------- */
+
+main {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 24px 28px 64px;
+}
+
+table.screen {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.screen thead th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+table.screen .col-prob,
+table.screen .col-year {
+  text-align: right;
+}
+
+table.screen .col-risk {
+  text-align: left;
+  width: 110px;
+}
+
+tr.company-row {
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 120ms ease;
+}
+
+tr.company-row:hover {
+  background: var(--bg-surface);
+}
+
+tr.company-row.is-open {
+  background: var(--bg-surface);
+}
+
+tr.company-row td {
+  padding: 11px 14px;
+  vertical-align: middle;
+}
+
+.ticker {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.company-name {
+  color: var(--text-primary);
+}
+
+.sector-tag {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+}
+
+.fiscal-year,
+.prob-value {
+  font-family: var(--font-mono);
+  text-align: right;
+  display: block;
+}
+
+.prob-value.is-null,
+.fiscal-year.is-null {
+  color: var(--text-tertiary);
+}
+
+.risk-badge {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.01em;
+}
+
+.risk-badge--high {
+  color: var(--risk-high);
+  background: var(--risk-high-bg);
+}
+
+.risk-badge--elevated {
+  color: var(--risk-elevated);
+  background: var(--risk-elevated-bg);
+}
+
+.risk-badge--low {
+  color: var(--risk-low);
+  background: var(--risk-low-bg);
+}
+
+.risk-badge--none {
+  color: var(--text-tertiary);
+  background: var(--bg-elevated);
+}
+
+.expand-chevron {
+  display: inline-block;
+  margin-right: 8px;
+  width: 8px;
+  color: var(--text-tertiary);
+  transition: transform 160ms ease;
+}
+
+tr.company-row.is-open .expand-chevron {
+  transform: rotate(90deg);
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------- */
+/* Expanded detail panel                                                 */
+/* --------------------------------------------------------------------- */
+
+tr.detail-row td {
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 32px;
+  padding: 22px 24px 28px 42px;
+  background: var(--bg-base);
+}
+
+.detail h3 {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.detail h3:first-child {
+  margin-top: 0;
+}
+
+.detail__narrative {
+  color: var(--text-primary);
+  font-size: 13.5px;
+  line-height: 1.65;
+  max-width: 68ch;
+  white-space: pre-line;
+}
+
+.driver-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 560px;
+}
+
+.driver {
+  display: grid;
+  grid-template-columns: 196px 1fr 64px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.driver__label {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.driver__track {
+  position: relative;
+  height: 14px;
+  background: var(--bg-elevated);
+}
+
+.driver__fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.driver__fill--up {
+  background: var(--risk-high);
+  left: 50%;
+}
+
+.driver__fill--down {
+  background: var(--risk-low);
+  right: 50%;
+}
+
+.driver__track::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--border-strong);
+}
+
+.driver__value {
+  font-family: var(--font-mono);
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+.detail__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-bottom: 4px;
+}
+
+.detail__table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  padding: 4px 8px 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail__table td {
+  padding: 5px 8px 5px 0;
+  font-family: var(--font-mono);
+  border-bottom: 1px solid var(--border);
+}
+
+.detail__table td:first-child {
+  font-family: var(--font-sans);
+}
+
+/* Named by meaning (favorable/concerning), not by literal z-score sign --
+   whether a positive or negative z is "good" depends on the ratio's own
+   direction convention (see HIGHER_IS_BETTER in app.js). */
+.detail__table .z-concerning { color: var(--risk-high); }
+.detail__table .z-favorable { color: var(--risk-low); }
+
+.detail__empty {
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+}
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+
+.trend-panel {
+  border: 1px solid var(--border);
+  padding: 8px 10px 6px;
+}
+
+.trend-panel__label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.trend-panel svg {
+  display: block;
+  width: 100%;
+  height: 36px;
+}
+
+.detail__report {
+  margin-top: 20px;
+}
+
+.report-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid var(--border-strong);
+  padding: 7px 12px;
+  border-radius: var(--radius);
+}
+
+.report-link:hover {
+  color: var(--accent-hover);
+  border-color: var(--accent);
+}
+
+/* --------------------------------------------------------------------- */
+/* Empty state                                                           */
+/* --------------------------------------------------------------------- */
+
+.empty-state {
+  padding: 64px 0;
+  max-width: 52ch;
+}
+
+.empty-state__title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.empty-state__body {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------- */
+/* Responsive                                                            */
+/* --------------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .appbar {
+    gap: 14px;
+  }
+  .appbar__summary {
+    order: 3;
+    width: 100%;
+  }
+  #search {
+    width: 160px;
+  }
+  .detail {
+    grid-template-columns: 1fr;
+    padding-left: 24px;
+  }
+  /* nth-child, not the .col-sector/.col-year classes -- those only exist
+     on <th> cells, not the <td> cells app.js generates per row, so a
+     class-based rule here would hide the header but leave the data
+     column in place, shifting every column out of alignment with its
+     header. Position-based hiding covers both. */
+  table.screen tr > *:nth-child(3),
+  table.screen tr > *:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  tr.company-row,
+  .expand-chevron {
+    transition: none;
+  }
+}

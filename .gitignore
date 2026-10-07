@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Project data (generated at runtime, not source)
+data/cache/*
+!data/cache/.gitkeep
+data/finsight.db
+data/*.db
+reports/output/*.pdf
+!reports/output/.gitkeep
+logs/*.log
+scoring/artifacts/*.json
+scoring/artifacts/*.txt
+
+# OS / editor cruft
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Airflow (if run locally against this repo)
+airflow.db
+airflow.cfg
+airflow-webserver.pid

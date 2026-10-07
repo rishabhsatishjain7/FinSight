@@ -1,0 +1,70 @@
+# FinSight — Coverage Universe
+# 14 companies across 4 sectors, used for sector-relative Z-score benchmarking.
+# Add a new company by adding an entry here — no code changes required
+# (this is what "minimal configuration changes" refers to in the pipeline design).
+
+sectors:
+  technology:
+    companies:
+      - ticker: AAPL
+        cik: "0000320193"
+        name: Apple Inc.
+      - ticker: MSFT
+        cik: "0000789019"
+        name: Microsoft Corporation
+      - ticker: ORCL
+        cik: "0001341439"
+        name: Oracle Corporation
+      - ticker: IBM
+        cik: "0000051143"
+        name: International Business Machines Corp.
+
+  retail:
+    companies:
+      - ticker: WMT
+        cik: "0000104169"
+        name: Walmart Inc.
+      - ticker: TGT
+        cik: "0000027419"
+        name: Target Corporation
+      - ticker: COST
+        cik: "0000909832"
+        name: Costco Wholesale Corporation
+      - ticker: KR
+        cik: "0000056873"
+        name: The Kroger Co.
+
+  energy:
+    companies:
+      - ticker: XOM
+        cik: "0000034088"
+        name: Exxon Mobil Corporation
+      - ticker: CVX
+        cik: "0000093410"
+        name: Chevron Corporation
+      - ticker: COP
+        cik: "0001163165"
+        name: ConocoPhillips
+
+  industrials:
+    companies:
+      - ticker: BA
+        cik: "0000012927"
+        name: The Boeing Company
+      - ticker: CAT
+        cik: "0000018230"
+        name: Caterpillar Inc.
+      - ticker: GE
+        cik: "0000040545"
+        name: General Electric Company
+      - ticker: HON
+        cik: "0000773840"
+        name: Honeywell International Inc.
+
+# How many years of filings to pull per company (matches "7+ years" in the pipeline)
+lookback_years: 7
+
+# Core XBRL statement types to ingest
+filing_forms:
+  - "10-K"
+  - "10-Q"

@@ -1,7 +1,7 @@
 """
 FinSight — ratio computation engine.
 
-Computes 30+ financial ratios per company per fiscal year from the
+Computes 40 financial ratios per company per fiscal year from the
 canonical line items produced by ingestion.xbrl_parser. Designed for
 extensibility: every ratio is a small function registered in RATIO_REGISTRY,
 so adding coverage for a new company requires zero changes here — only a

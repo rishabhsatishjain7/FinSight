@@ -47,7 +47,7 @@ SEC EDGAR (XBRL) ──▶ ingestion ──▶ transformation ──▶ scoring 
 | Orchestration | `pipeline.py` | Stage functions (`stage_ingest`, `stage_transform`, `stage_score`, `stage_narrate`, `stage_report`) shared by CLI and Airflow |
 | Orchestration | `dags/finsight_pipeline_dag.py` | Airflow DAGs: daily pipeline (weekdays 06:00) + weekly model retrain (Sundays 05:00) |
 | Storage | `database/storage.py` | **SQLAlchemy Core**, dialect-aware — SQLite by default, Postgres via `DATABASE_URL`, no application code changes to switch |
-| Config | `config/companies.yaml` / `config/settings.py` | 14 companies, 4 sectors, 7-year lookback — add a company with zero code changes |
+| Config | `config/companies.yaml` / `config/settings.py` | 15 companies, 4 sectors, 7-year lookback — add a company with zero code changes |
 | Dashboard | `webapp/main.py` | Read-only FastAPI backend over the storage layer — storage-driven (shows whatever tickers actually have data), not config-driven |
 | Dashboard | `webapp/static/` | No-build-step frontend (vanilla HTML/CSS/JS): dense company screen table, inline-expanding detail panel with SHAP driver bars, ratio trend sparklines, sector outliers, narrative, PDF download |
 
@@ -55,7 +55,7 @@ SEC EDGAR (XBRL) ──▶ ingestion ──▶ transformation ──▶ scoring 
 
 ## 2. Data coverage
 
-14 companies across 4 sectors (technology, retail, energy, industrials), 7
+15 companies across 4 sectors (technology, retail, energy, industrials), 7
 years of 10-K history. Adding a company is a config-only change in
 `config/companies.yaml` (ticker, CIK, sector) — no code changes anywhere
 in the pipeline.
@@ -250,7 +250,7 @@ through real interactions — row expansion, search filtering, a narrow
 viewport. That verification pass caught four real issues before they
 shipped (all documented as RC-012 in `tests/REGRESSION_CASES.md`):
 
-- The API only recognized the 14 real tracked companies, not
+- The API only recognized the 15 real tracked companies, not
   `scripts/run_demo.py`'s synthetic universe — fixed by making the
   dashboard storage-driven (`Storage.list_tickers()`) instead of
   config-driven.
@@ -274,7 +274,7 @@ shipped (all documented as RC-012 in `tests/REGRESSION_CASES.md`):
 
 ## 4. Testing
 
-**89 tests, all passing** (85 always run; 4 Postgres-specific tests run
+**93 tests, all passing** (89 always run; 4 Postgres-specific tests run
 whenever a Postgres instance is reachable, otherwise skip cleanly):
 
 | File | Covers |

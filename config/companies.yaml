@@ -1,5 +1,5 @@
 # FinSight — Coverage Universe
-# 14 companies across 4 sectors, used for sector-relative Z-score benchmarking.
+# 15 companies across 4 sectors, used for sector-relative Z-score benchmarking.
 # Add a new company by adding an entry here — no code changes required
 # (this is what "minimal configuration changes" refers to in the pipeline design).
 

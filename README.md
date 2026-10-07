@@ -17,7 +17,7 @@ automated PDF reporting, orchestrated with Airflow.
 
 ```
 SEC EDGAR (XBRL) ──▶ ingestion ──▶ transformation ──▶ scoring ──▶ narrative ──▶ reporting
-                     (multi-tag    (30+ ratios,        (XGBoost +   (Gemini      (structured
+                     (multi-tag    (40 ratios,         (XGBoost +   (Gemini      (structured
                       fallback,     sector Z-scores)     SHAP)        RAG)         PDF)
                       schema
                       evolution)
@@ -41,9 +41,12 @@ SEC EDGAR (XBRL) ──▶ ingestion ──▶ transformation ──▶ scoring 
 | Dashboard | `webapp/main.py` | Read-only FastAPI backend over the storage layer — no duplicated pipeline logic |
 | Dashboard | `webapp/static/` | Interactive frontend: company screen table, SHAP drivers, ratio trends, outliers, narrative, PDF download |
 
-Coverage: 14 companies across 4 sectors (technology, retail, energy, industrials),
+Coverage: 15 companies across 4 sectors (technology, retail, energy, industrials),
 7 years of 10-K history — configured entirely in `config/companies.yaml`. Adding a
-new company requires **no code changes**, only a config entry.
+new company requires **no code changes**, only a config entry. (The offline demo,
+`scripts/run_demo.py`, instead seeds a separate synthetic universe of 16 companies —
+4 demo sectors × 4 tickers such as `TEC0` and `RET3` — which is what the dashboard
+screenshots below show.)
 
 ## Setup
 
